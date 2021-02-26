@@ -1,31 +1,484 @@
 openapi: 3.0.0
 info:
-  version: 0.2.0
+  version: v1
   title: Trulioo SDK
-  description: |
-    Trulioo SDK
-servers:
-  - url: https://gateway.trulioo.com
-x-samples-languages:
-  - curl
-  - node
-  - javascript
-  - ruby
-  - python
+  description: Trulioo SDK
 paths:
-  "/{mode}/connection/v1/testauthentication":
+  /{mode}/business/v1/search:
+    post:
+      tags:
+        - Business
+      summary: Calling this method will perform a business search.
+      operationId: Search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessSearchRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BusinessSearchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessSearchResponse'
+              examples:
+                response:
+                  value:
+                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
+                    UploadedDt: '2015-02-19T13:25:50'
+                    CountryCode: null
+                    ProductName: null
+                    Record:
+                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
+                      RecordStatus: null
+                      DatasourceResults:
+                        - Results:
+                            - Index: '1'
+                              BusinessName: ACME Consulting
+                              MatchingScore: '1'
+                              BusinessRegistrationNumber: '1234'
+                              DUNSNumber: null
+                              BusinessTaxIDNumber: null
+                              BusinessLicenseNumber: null
+                              JurisdictionOfIncorporation: null
+                              FullAddress: null
+                              BusinessStatus: null
+                              TradeStyleName: null
+                              BusinessType: null
+                              Address: null
+                              OtherBusinessNames: null
+                              Website: null
+                              Telephone: null
+                              TaxIDNumber: null
+                              TaxIDNumbers: null
+                              EmailAddress: null
+                              WebDomain: null
+                              WebDomains: null
+                              NAICS: null
+                              SIC: null
+                          DatasourceName: Business Search Datasource
+                          Errors: []
+                      Errors: []
+                    Errors: null
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BusinessSearchResponse'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/mode'
+  /{mode}/business/v1/search/transactionrecord/{id}:
+    get:
+      tags:
+        - Business
+      summary: returns the a business search result.
+      operationId: GetBusinessSearchResult
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: id
+          in: path
+          description: transaction record id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BusinessSearchResponse'
+              examples:
+                response:
+                  value:
+                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
+                    UploadedDt: '2015-02-19T13:25:50'
+                    CountryCode: null
+                    ProductName: null
+                    Record:
+                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
+                      RecordStatus: null
+                      DatasourceResults:
+                        - Results:
+                            - Index: '1'
+                              BusinessName: ACME Consulting
+                              MatchingScore: '1'
+                              BusinessRegistrationNumber: '1234'
+                              DUNSNumber: null
+                              BusinessTaxIDNumber: null
+                              BusinessLicenseNumber: null
+                              JurisdictionOfIncorporation: null
+                              FullAddress: null
+                              BusinessStatus: null
+                              TradeStyleName: null
+                              BusinessType: null
+                              Address: null
+                              OtherBusinessNames: null
+                              Website: null
+                              Telephone: null
+                              TaxIDNumber: null
+                              TaxIDNumbers: null
+                              EmailAddress: null
+                              WebDomain: null
+                              WebDomains: null
+                              NAICS: null
+                              SIC: null
+                          DatasourceName: Business Search Datasource
+                          Errors: []
+                      Errors: []
+                    Errors: null
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BusinessSearchResponse'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/common/v1/ip-info:
+    get:
+      tags:
+        - Common
+      summary: This method returns the client's public IP address.
+      operationId: Common_IpInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+      parameters:
+        - $ref: '#/components/parameters/mode'
+  /{mode}/configuration/v1/countrysubdivisions/{countryCode}:
+    get:
+      tags:
+        - Configuration
+      summary: >-
+        Gets the provinces states or other subdivisions for a country, mostly
+        matches ISO 3166-2
+      operationId: GetCountrySubdivisions
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: countryCode
+          in: path
+          description: Country alpha2 code, get the the call to countrycodes
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CountrySubdivision'
+              examples:
+                response:
+                  value:
+                    - Name: Northern Territory
+                      Code: NT
+                      ParentCode: ''
+                    - Name: Western Australia
+                      Code: WA
+                      ParentCode: ''
+                    - Name: New South Wales
+                      Code: NSW
+                      ParentCode: ''
+                    - Name: Queensland
+                      Code: QLD
+                      ParentCode: ''
+                    - Name: South Australia
+                      Code: SA
+                      ParentCode: ''
+                    - Name: Tasmania
+                      Code: TAS
+                      ParentCode: ''
+                    - Name: Victoria
+                      Code: VIC
+                      ParentCode: ''
+                    - Name: Australian Capital Territory
+                      Code: ACT
+                      ParentCode: ''
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CountrySubdivision'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/configuration/v1/businessregistrationnumbers/{countryCode}/{jurisdictionCode}:
+    get:
+      tags:
+        - Configuration
+      summary: >-
+        Gets the currently configured business registration numbers, for country
+        and an optionally supplied jurisdiction
+      operationId: GetBusinessRegistrationNumbers
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: countryCode
+          in: path
+          description: >-
+            Country alpha2 code, get via the call to
+            https://developer.trulioo.com/reference#getcountrycodes
+          required: true
+          schema:
+            type: string
+        - name: jurisdictionCode
+          in: path
+          description: >-
+            Optional jurisdiction code, get via the call to
+            https://developer.trulioo.com/reference#getcountrysubdivisions
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BusinessRegistrationNumber'
+              examples:
+                response:
+                  value:
+                    - Name: >-
+                        Corporation Number or Corporation ID or Registry ID
+                        (Provincial number in some cases: Numéro d'entreprise du
+                        Québec (NEQ))
+                      Description: 0’s can be trimmed by some sources
+                      Country: Canada
+                      Jurisdiction: null
+                      Supported: true
+                      Type: Federal Business Number
+                      Masks:
+                        - Mask: '######-#'
+                          IgnoreWhitespace: false
+                          IgnoreSpecialCharacter: false
+                    - Name: Example Provincial Number
+                      Description: >-
+                        Nine-digit business number followed by a two letter
+                        abbreviation denoting the type of account it is,
+                        followed by a four digit number.
+                      Country: Canada
+                      Jurisdiction: Alberta
+                      Supported: false
+                      Type: Provincial Business Number
+                      Masks:
+                        - Mask: '#########AA####'
+                          IgnoreWhitespace: false
+                          IgnoreSpecialCharacter: false
+                    - Name: SIRET
+                      Description: >-
+                        Is a 14 digit number consisting of the SIREN (the
+                        business identifier) and a five digit NIC code (the
+                        establishment identifier).
+                      Country: France
+                      Jurisdiction: null
+                      Supported: true
+                      Type: Federal Business Number
+                      Masks:
+                        - Mask: '#########a####'
+                          IgnoreWhitespace: false
+                          IgnoreSpecialCharacter: false
+                        - Mask: '######### #####'
+                          IgnoreWhitespace: false
+                          IgnoreSpecialCharacter: false
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BusinessRegistrationNumber'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/configuration/v1/documentTypes/{countryCode}:
+    get:
+      tags:
+        - Configuration
+      summary: Gets the document types available for a country.
+      operationId: GetDocumentTypes
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: countryCode
+          in: path
+          description: Call CountryCodes to get the countries available to you.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+              examples:
+                response:
+                  value:
+                    AU:
+                      - DrivingLicence
+                      - Passport
+            text/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/connection/v1/sayhello/{name}:
     get:
       tags:
         - Connection
-      summary: Test Authentication
+      summary: "This method enables you to check if your system can connect to our system. You can even use a web browser to verify a connection to our system.\r\nApplied a maximum length for the name parameter of 100 via a route constraint"
+      operationId: SayHello
       parameters:
-        - $ref: "#/components/parameters/mode"
-      description: This method enables you to check if your credentials are valid. You will
-        need to use ApiKeyAuth authentication to ensure a successful response.
+        - $ref: '#/components/parameters/mode'
+        - name: name
+          in: path
+          description: Name to be returned in the response
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: Hello Joe Napoli
+            text/json:
+              schema:
+                type: string
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+  /{mode}/connection/v1/testauthentication:
+    get:
+      tags:
+        - Connection
+      summary: >-
+        This method enables you to check if your credentials are valid. You will
+        need to use basic authentication to ensure a successful response.
       operationId: TestAuthentication
       responses:
-        "200":
-          description: Your username.
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -36,41 +489,998 @@ paths:
             text/json:
               schema:
                 type: string
-        "400":
-          description: Your request could not be processed, there should be more details in
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
             the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
             using an account not configured to be an API user.
-        "408":
+        '408':
           description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
             request application/json in the Content-Type header.
-        "500":
+        '500':
           description: An error happened on the server without a specific message.
       security:
         - ApiKeyAuth: []
-  "/{mode}/configuration/v1/countrycodes/{configurationName}":
+      parameters:
+        - $ref: '#/components/parameters/mode'
+  /{mode}/connection/v1/async-callback:
+    post:
+      tags:
+        - Connection
+      summary: >-
+        If set, the transaction will run asynchronously and Trulioo will try to
+        update the client with transaction state updates until completed. If
+        callback is not desired but the client wants to initiate an asynchronous
+        transaction, provide
+        https://api.globaldatacompany.com/connection/v1/async-callback as the
+        Callback URL.
+      operationId: Connection_AsyncCallbackUrl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionStatus'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/TransactionStatus'
+        description: transactionStatus
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+            text/json:
+              schema:
+                type: object
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      parameters:
+        - $ref: '#/components/parameters/mode'
+  /{mode}/verifications/v1/verify:
+    post:
+      tags:
+        - Verifications
+      summary: "Calling this method will perform a verification. If your account includes address cleansing set the CleansedAddress flag to get\r\nadditional address information in the result.  You can query configuration to get what fields are available to you in each each country.\r\nIt is also possible to get sample requests from the customer portal."
+      operationId: Verify
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VerifyRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+              examples:
+                response:
+                  value:
+                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
+                    UploadedDt: '2015-02-19T13:25:50'
+                    CountryCode: null
+                    ProductName: null
+                    Record:
+                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
+                      RecordStatus: match
+                      DatasourceResults:
+                        - DatasourceStatus: match
+                          DatasourceName: Consumer Intl
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: Resident Files
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: International Watchlist
+                          DatasourceFields:
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: MiddleName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                      Errors:
+                        - Code: '1008'
+                          Message: 'Field format invalid: FirstInitial'
+                      Rule: null
+                    CustomerReferenceID: null
+                    Errors: []
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/mode'
+  /{mode}/verifications/v1/transactionrecord/{id}:
     get:
       tags:
-        - Configuration
-      summary: Get Country Codes
-      description: "This method retrieves all the countries that are available to perform a
-        verification. It returns an array of Alpha2 Country Codes"
-      operationId: GetCountryCodes
+        - Verifications
+      summary: "This method is used to retrieve the request and results of a verification performed using the verify method.\r\nThe response for this method includes the same information as verify method's response, along with data present in the input fields of the verify request."
+      operationId: GetTransactionRecord
       parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: configurationName
+        - $ref: '#/components/parameters/mode'
+        - name: id
           in: path
-          description: The product configuration. Currently "Identity Verification" for all products.
+          description: id of the transactionrecord, this will be a GUID
           required: true
           schema:
             type: string
-            default: Identity Verification
       responses:
-        "200":
-          description: A collection of strings of all the countries that are available to perform a verification.
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecordResult'
+              examples:
+                response:
+                  value:
+                    InputFields: []
+                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
+                    UploadedDt: '2015-02-19T13:25:50'
+                    CountryCode: null
+                    ProductName: null
+                    Record:
+                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
+                      RecordStatus: match
+                      DatasourceResults:
+                        - DatasourceStatus: match
+                          DatasourceName: Consumer Intl
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: Resident Files
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: International Watchlist
+                          DatasourceFields:
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: MiddleName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                      Errors:
+                        - Code: '1008'
+                          Message: 'Field format invalid: FirstInitial'
+                      Rule: null
+                    CustomerReferenceID: null
+                    Errors: []
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecordResult'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/verifications/v1/transactionrecord/{transactionRecordID}/{documentField}:
+    get:
+      tags:
+        - Verifications
+      summary: "This method is used to retrieve the document of a verification performed using the verify method.\r\nThe response for this method includes the processed base64 JPEG formatted string"
+      operationId: GetTransactionRecordDocument
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: transactionRecordID
+          in: path
+          description: id of the transactionrecord, this will be a GUID
+          required: true
+          schema:
+            type: string
+        - name: documentField
+          in: path
+          description: FieldName of the Document, this will be a string
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: >-
+                    R0lGODlhAQABAPAAAO7u7gAAACH/C1hNUCBEYXRhWE1QAT8AIfkEBQAAAAAsAAAAAAEAAQBAAgJEAQA7
+            text/json:
+              schema:
+                type: string
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/verifications/v1/transactionrecord/{id}/withaddress:
+    get:
+      tags:
+        - Verifications
+      summary: "Fetch the results of a verification with the TransactionRecordId for the transaction this will include additional information if your account\r\nincludes address cleansing."
+      operationId: GetTransactionRecordAddress
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: id
+          in: path
+          description: id of the transactionrecord, this will be a GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecordResult'
+              examples:
+                response:
+                  value:
+                    InputFields: []
+                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
+                    UploadedDt: '2015-02-19T13:25:50'
+                    CountryCode: null
+                    ProductName: null
+                    Record:
+                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
+                      RecordStatus: match
+                      DatasourceResults:
+                        - DatasourceStatus: match
+                          DatasourceName: Consumer Intl
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: Resident Files
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: International Watchlist
+                          DatasourceFields:
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: MiddleName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields:
+                            - FieldName: WatchlistState
+                              Data: Hit
+                            - FieldName: WatchlistData
+                              Data: >-
+                                System for Award Management
+                                Exclusions|https://www.sam.gov\tSpecially
+                                Designated Nationals
+                                List|http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx\tExport.gov
+                                Consolitdated
+                                list|http://export.gov/ecr/eg_main_023148.asp
+                          Errors: []
+                          FieldGroups: []
+                      Errors:
+                        - Code: '1008'
+                          Message: 'Field format invalid: FirstInitial'
+                      Rule: null
+                    CustomerReferenceID: null
+                    Errors: []
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecordResult'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/verifications/v1/transactionrecord/{id}/verbose:
+    get:
+      tags:
+        - Verifications
+      summary: "Fetch the results of a verification with the TransactionRecordId for the transaction this will include additional information if your account\r\nincludes address cleansing and watchlist details."
+      operationId: GetTransactionRecordVerbose
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: id
+          in: path
+          description: id of the transactionrecord, this will be a GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecordResult'
+              examples:
+                response:
+                  value:
+                    InputFields: []
+                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
+                    UploadedDt: '2015-02-19T13:25:50'
+                    CountryCode: null
+                    ProductName: null
+                    Record:
+                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
+                      RecordStatus: match
+                      DatasourceResults:
+                        - DatasourceStatus: match
+                          DatasourceName: Consumer Intl
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: Resident Files
+                          DatasourceFields:
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: BuildingNumber
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: City
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: County
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: StreetType
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: PostalCode
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields: []
+                          Errors: []
+                          FieldGroups: []
+                        - DatasourceStatus: match
+                          DatasourceName: International Watchlist
+                          DatasourceFields:
+                            - FieldName: FirstGivenName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: MiddleName
+                              Status: match
+                              FieldGroup: null
+                            - FieldName: FirstSurName
+                              Status: match
+                              FieldGroup: null
+                          AppendedFields:
+                            - FieldName: WatchlistState
+                              Data: Hit
+                            - FieldName: WatchlistData
+                              Data: >-
+                                System for Award Management
+                                Exclusions|https://www.sam.gov\tSpecially
+                                Designated Nationals
+                                List|http://www.treasury.gov/resource-center/sanctions/SDN-List/Pages/default.aspx\tExport.gov
+                                Consolitdated
+                                list|http://export.gov/ecr/eg_main_023148.asp
+                          Errors: []
+                          FieldGroups: []
+                      Errors:
+                        - Code: '1008'
+                          Message: 'Field format invalid: FirstInitial'
+                      Rule: null
+                    CustomerReferenceID: null
+                    Errors: []
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecordResult'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/verifications/v1/transaction/{id}/status:
+    get:
+      tags:
+        - Verifications
+      summary: >-
+        This method is used to retrieve the processing status of an asynchronous
+        transaction. The response for this method includes the processing status
+        of the verification, the TransactionID, the TransactionRecordID as well
+        as whether the verification request has timed out.
+      operationId: GetTransactionStatus
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: id
+          in: path
+          description: id of the asynchronous transaction, this will be a GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+              examples:
+                response:
+                  value:
+                    TransactionId: 111-2222-333-4444-5555
+                    TransactionRecordId: 6666-7777-8888-99999
+                    Status: InProgress
+                    UploadedDt: '2017-07-11T21:47:50'
+                    IsTimedOut: false
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/verifications/v1/documentdownload/{transactionRecordId}/{fieldName}:
+    get:
+      tags:
+        - Verifications
+      summary: Download Document
+      operationId: DocumentDownload
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: transactionRecordId
+          in: path
+          description: id of the transactionrecord, this will be a GUID
+          required: true
+          schema:
+            type: string
+        - name: fieldName
+          in: path
+          description: document field name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+            text/json:
+              schema:
+                type: object
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/worldcheck/v1/profile/{originalTransactionID}/{referenceID}:
+    get:
+      tags:
+        - WorldCheck
+      summary: >-
+        Returns the corresponding world-check profile of the specified
+        transaction ID and reference ID.
+      operationId: GetWorldCheckProfile
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - name: originalTransactionID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: referenceID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+            text/json:
+              schema:
+                type: object
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/configuration/v1/consents/{configurationName}/{countryCode}:
+    get:
+      tags:
+        - Configuration
+      summary: "This method retrieves the consents required for data sources currently configured in your account configuration. \r\nThe response for this method contains a collection of strings that Verify method's ConsentForDataSources field expects to perform a verification using those data sources. \r\nA failure to provide an element from the string collection will lead to a <a class=\"link-to-api\" href=\"#errors\">1005</a> service error."
+      operationId: GetConsents
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
+        - name: countryCode
+          in: path
+          description: Call CountryCodes to get the countries available to you.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                response:
+                  value:
+                    - Australia Driver Licence
+                    - Australia Passport
+                    - Birth Registry
+                    - Visa Verification
+                    - DVS Driver License Search
+                    - DVS Medicare Search
+                    - DVS Passport Search
+                    - DVS Visa Search
+                    - DVS ImmiCard Search
+                    - DVS Citizenship Certificate Search
+                    - DVS Certificate of Registration by Descent Search
+                    - Credit Agency
+            text/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/configuration/v1/detailedConsents/{configurationName}/{countryCode}:
+    get:
+      tags:
+        - Configuration
+      summary: "This method retrieves details about consents required for data sources currently configured in your account configuration. \r\nThe response for this method contains a collection of objects.\r\nEach object contains the Name of the data source, Text outlining what the user is consenting to, and optionally a Url where the user can find more information about how their data will be used.  \r\nFailure to provide a Name from the object collection will lead to a <a class=\"link-to-api\" href=\"#errors\">1005</a> service error."
+      operationId: GetDetailedConsents
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
+        - name: countryCode
+          in: path
+          description: Call CountryCodes to get the countries available to you.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consent'
+              examples:
+                response:
+                  value:
+                    - Name: Australia Passport
+                      Text: >-
+                        The individual has given consent for their details to be
+                        checked online with the Australian Passport Office.
+                      Url: null
+                    - Name: Visa Verification
+                      Text: >-
+                        The individual has given consent for their details to be
+                        checked online with the Australian Government -
+                        Department of Immigration and Citizenship.
+                      Url: null
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consent'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/configuration/v1/countrycodes/{configurationName}:
+    get:
+      tags:
+        - Configuration
+      summary: >-
+        This method retrieves all the countries that are available to perform a
+        verification.
+      operationId: GetCountryCodes
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
@@ -95,470 +1505,44 @@ paths:
                 type: array
                 items:
                   type: string
-        "400":
-          description: Your request could not be processed, there should be more details in
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
             the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
             using an account not configured to be an API user.
-        "408":
+        '408':
           description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
             request application/json in the Content-Type header.
-        "500":
+        '500':
           description: An error happened on the server without a specific message.
       security:
         - ApiKeyAuth: []
-  "/{mode}/configuration/v1/testentities/{configurationName}/{countryCode}":
-    get:
-      tags:
-        - Configuration
-      summary: Get Test Entities
-      description: Gets the test entities configured for your product and country.
-      operationId: GetTestEntities
       parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: configurationName
-          in: path
-          description: The product configuration. Currently "Identity Verification" for all
-            products.
-          required: true
-          schema:
-            type: string
-            default: Identity Verification
-        - name: countryCode
-          in: path
-          description: "Country alpha2 code"
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DataFields"
-              examples:
-                response:
-                  value:
-                    - PersonInfo:
-                        FirstGivenName: John
-                        MiddleName: Henry
-                        FirstSurName: Smith
-                        DayOfBirth: "5"
-                        MonthOfBirth: "3"
-                        YearOfBirth: "1983"
-                        Gender: M
-                      Location:
-                        BuildingNumber: "10"
-                        UnitNumber: "3"
-                        StreetName: Lawford
-                        StreetType: st
-                        Suburb: Doncaster
-                        StateProvinceCode: VIC
-                        PostalCode: "3108"
-                      Communication:
-                        Telephone: 03 9896 8785
-                        EmailAddress: testpersonAU@gdctest.com
-                      DriverLicence:
-                        Number: "076310691"
-                        State: VIC
-                        DayOfExpiry: "3"
-                        MonthOfExpiry: "4"
-                        YearOfExpiry: "2021"
-                      NationalIds:
-                        - Number: "5643513953"
-                          Type: Health
-                      Passport:
-                        Mrz1: P<SAGSMITH<<JOHN<HENRY<<<<<<<<<<<<<<<<<<<<<<
-                        Mrz2: N1236548<1AUS8303052359438740809<<<<<<<<<<54
-                        Number: N1236548
-                        DayOfExpiry: 5
-                        MonthOfExpiry: 12
-                        YearOfExpiry: 2018
-                      CountrySpecific:
-                        AU:
-                          AuImmiCardNumber: "EIS123456"
-                          CitizenshipAcquisitionDay: "15"
-                          CitizenshipAcquisitionMonth: "4"
-                          CitizenshipAcquisitionYear: "1987"
-                          CountryOfBirth: "Australia"
-                          FamilyNameAtBirth: "Smith"
-                          MedicareColor: "Blue"
-                          MedicareMonthOfExpiry: "12"
-                          MedicareReference: "2"
-                          MedicareYearOfExpiry: "2017"
-                          PassportCountry: "Australia"
-                          PlaceOfBirth: "Melbourne"
-                          RegistrationNumber: "565659"
-                          RegistrationState: "NSW"
-                          StockNumber: "ACD1234567"
-        "400":
-          description: Your request could not be processed, there should be more details in
-            the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
-            using an account not configured to be an API user.
-        "408":
-          description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
-            request application/json in the Content-Type header.
-        "500":
-          description: An error happened on the server without a specific message.
-      security:
-        - ApiKeyAuth: []
-  "/{mode}/configuration/v1/fields/{configurationName}/{countryCode}":
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
+  /{mode}/configuration/v1/fields/{configurationName}/{countryCode}:
     get:
       tags:
         - Configuration
-      summary: Get Fields
-      description: "Generates json schema for the API, the schema is dynamic based on the country and configuration you are using json-schema.org"
+      summary: "Generates json schema for the API, the schema is dynamic based on the country and configuration you are using.\r\nhttp://json-schema.org/documentation.html"
       operationId: GetFields
       parameters:
-        - $ref: "#/components/parameters/mode"
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
         - name: countryCode
           in: path
-          description: "Country alpha2 code"
+          description: Call CountryCodes to get the countries available to you.
           required: true
           schema:
             type: string
-        - name: configurationName
-          in: path
-          description: The product configuration. Currently "Identity Verification" for all
-            products.
-          required: true
-          schema:
-            type: string
-            default: Identity Verification
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-              examples:
-                response:
-                  value:
-                    title: DataFields
-                    type: object
-                    properties:
-                      PersonInfo:
-                        title: PersonInfo
-                        type: object
-                        properties:
-                          FirstGivenName:
-                            type: string
-                            description: First name of the individual to be verified
-                            label: First Name (名)
-                          MiddleName:
-                            type: string
-                            description: Second given name of the individual to be verified
-                            label: Middle Name
-                          FirstSurName:
-                            type: string
-                            description: Last name of the individual to be verified
-                            label: Last Name (姓)
-                          ISOLatin1Name:
-                            type: string
-                            description: ISO Latin 1 Full name as it appears on passport
-                            label: Passport Full Name
-                          DayOfBirth:
-                            type: int
-                            description: Day of birth date (ie 23 for a date of birth of
-                              23/11/1975)
-                            label: Day Of Birth (日)
-                          MonthOfBirth:
-                            type: int
-                            description: Month of birth date (ie 11 for a date of birth of
-                              23/11/1975)
-                            label: Month Of Birth (月)
-                          YearOfBirth:
-                            type: int
-                            description: Year of birth date (ie 1975 for a date of birth of
-                              23/11/1975)
-                            label: Year Of Birth (年)
-                          Gender:
-                            type: string
-                            description: Gender, may be 'M' for male or 'F' for female
-                            label: Gender
-                          AdditionalFields:
-                            type: object
-                            description: Family name and given names, together as found on
-                              identification documents
-                            label: Full Name (姓名)
-                            properties:
-                              title: AdditionalFields
-                              type: object
-                              properties:
-                                FullName:
-                                  type: string
-                                  description: Family name and given names, together as
-                                    found on identification documents
-                                  label: Full Name (姓名)
-                              required:
-                                - FullName
-                        required:
-                          - FirstGivenName
-                          - FirstGivenName
-                          - FirstSurName
-                          - FirstSurName
-                          - AdditionalFields
-                          - ISOLatin1Name
-                      Location:
-                        title: Location
-                        type: object
-                        properties:
-                          BuildingNumber:
-                            type: string
-                            description: Building number of home address
-                            label: Building Number (楼房号码)
-                          BuildingName:
-                            type: string
-                            description: Building name of home address
-                            label: Building Name (楼房名称)
-                          UnitNumber:
-                            type: string
-                            description: Flat/Unit/Apartment number of primary residence
-                            label: Unit Number
-                          StreetName:
-                            type: string
-                            description: Street name of primary residence
-                            label: Street Name (街道名称)
-                          StreetType:
-                            type: string
-                            description: Street type of primary residence (Typically St, Rd
-                              etc)
-                            label: Street Type (街道种类)
-                          City:
-                            type: string
-                            description: City of home address
-                            label: City (城市)
-                          Suburb:
-                            type: string
-                            description: City or Suburb of primary residence
-                            label: Suburb
-                          County:
-                            type: string
-                            description: County of home address
-                            label: County (县)
-                          StateProvinceCode:
-                            type: string
-                            description: State or Province
-                            label: State Province
-                          PostalCode:
-                            type: string
-                            description: ZIP Code or Postal Code of primary residence
-                            label: Postal Code
-                          POBox:
-                            type: string
-                            description: Post Office Box
-                            label: PO Box
-                          AdditionalFields:
-                            type: object
-                            description: Street address of primary residence
-                            label: Address 1
-                            properties:
-                              title: AdditionalFields
-                              type: object
-                              properties:
-                                Address1:
-                                  type: string
-                                  description: Street address of primary residence
-                                  label: Address 1
-                              required: []
-                        required: []
-                      Communication:
-                        title: Communication
-                        type: object
-                        properties:
-                          Telephone:
-                            type: string
-                            description: Telephone number of the individual to be verified
-                            label: Telephone (固定电话号码)
-                          EmailAddress:
-                            type: string
-                            description: Email Address
-                            label: Email Address
-                        required:
-                          - EmailAddress
-                      NationalIds:
-                        title: NationalIds
-                        type: object
-                        properties:
-                          Number:
-                            type: string
-                            description: (National ID Number)
-                          Type:
-                            type: string
-                            value: nationalid
-                          DistrictOfIssue:
-                            type: string
-                            description: District where document was issued
-                            label: District Of Issue (发证区)
-                          CityOfIssue:
-                            type: string
-                            description: City where document was issued
-                            label: City Of Issue (发证城市)
-                          ProvinceOfIssue:
-                            type: string
-                            description: Province where document was issued
-                            label: Province Of Issue (发证省)
-                          CountyOfIssue:
-                            type: string
-                            description: County where document was issued
-                            label: County Of Issue (发证县)
-                        required:
-                          - ProvinceOfIssue
-                          - nationalid
-                      Passport:
-                        title: Passport
-                        type: object
-                        properties:
-                          Mrz1:
-                            type: string
-                            description: First line of the Machine Readable Zone (MRZ) of
-                              passport, 44 letters and digits, i.e. 'P<CZESPECIMEN<<VZOR<<<<<<<<<<<<<<<<<<<<<<<<<'
-                            label: Passport MRZ Line 1 (护照第一行MRZ)
-                          Mrz2:
-                            type: string
-                            description: Second line of the Machine Readable Zone (MRZ) of passport, 44 letters and digits, i.e. '99003853<1CZE1101018M1207046110101111<<<<<94'
-                            label: Passport MRZ Line 2 (护照第二行MRZ)
-                          Number:
-                            type: string
-                            description: Passport number of the individual to be verified
-                            label: Passport Number (护照号)
-                          DayOfExpiry:
-                            type: int
-                            description: Day of month of expiration of passport, 2 digits, i.e. '14'
-                            label: Passport Day Of Expiry
-                          MonthOfExpiry:
-                            type: int
-                            description: Month of year of expiration of passport, 2 digits, i.e. '08'
-                            label: Passport Month Of Expiry
-                          YearOfExpiry:
-                            type: int
-                            description: Year of expiration of passport, 4 digits, i.e. '1980'
-                            label: Passport Year Of Expiry
-                        required:
-                          - Mrz1
-                          - Mrz2
-                      Business:
-                        title: Business
-                        type: object
-                        properties:
-                          BusinessName:
-                            type: string
-                            description: The Primary or Registered name of the business
-                            label: Business Name
-                          BusinessRegistrationNumber:
-                            type: string
-                            description: Registration number of a business to be verified
-                            label: Business Registration Number
-                          DayOfIncorporation:
-                            type: int
-                            description: Day of Incorporation date
-                            label: Day Of Incorporation
-                          MonthOfIncorporation:
-                            type: int
-                            description: Month of Incorporation date
-                            label: Month Of Incorporation
-                          YearOfIncorporation:
-                            type: int
-                            description: Year of Incorporation date
-                            label: Year Of Incorporation
-                          JurisdictionOfIncorporation:
-                            type: string
-                            description: Jurisdiction Of Incorporation
-                            label: Jurisdiction Of Incorporation
-                          ShareholderListDocument:
-                            type: boolean
-                            description: Retrieve the shareholder list document of a company from the Government Registry
-                            label: Shareholder List Document
-                        required:
-                          - BusinessName
-                          - BusinessRegistrationNumber
-                      CountrySpecific:
-                        title: CountrySpecific
-                        type: object
-                        properties:
-                          CN:
-                            title: CN
-                            type: object
-                            properties:
-                              PassportMRZLine1:
-                                type: string
-                                description: First line of the Machine Readable Zone (MRZ) of
-                                  passport, 44 letters and digits, i.e. 'P<CZESPECIMEN<<VZOR<<<<<<<<<<<<<<<<<<<<<<<<<'
-                                label: Passport MRZ Line 1 (护照第一行MRZ)
-                              PassportMRZLine2:
-                                type: string
-                                description: Second line of the Machine Readable Zone (MRZ) of passport, 44 letters and digits, i.e. '99003853<1CZE1101018M1207046110101111<<<<<94'
-                                label: Passport MRZ Line 2 (护照第二行MRZ)
-                              PassportNumber:
-                                type: string
-                                description: Passport number of the individual to be verified
-                                label: Passport Number (护照号)
-                              PassportDayOfExpiry:
-                                type: int
-                                description: Day of month of expiration of passport, 2 digits, i.e. '14'
-                                label: Passport Day Of Expiry
-                              PassportMonthOfExpiry:
-                                type: int
-                                description: Month of year of expiration of passport, 2 digits, i.e. '08'
-                                label: Passport Month Of Expiry
-                              PassportYearOfExpiry:
-                                type: int
-                                description: Year of expiration of passport, 4 digits, i.e. '1980'
-                                label: Passport Year Of Expiry
-                              required:
-                                - PassportMRZLine1
-                                - PassportMRZLine2
-        "400":
-          description: Your request could not be processed, there should be more details in
-            the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
-            using an account not configured to be an API user.
-        "408":
-          description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
-            request application/json in the Content-Type header.
-        "500":
-          description: An error happened on the server without a specific message.
-      security:
-        - ApiKeyAuth: []
-  "/{mode}/configuration/v1/recommendedfields/{configurationName}/{countryCode}":
-    get:
-      tags:
-        - Configuration
-      summary: Get Recommended Fields
-      description: "Generates json schema for the API, the schema is dynamic based on the recommendedFields country and account you are using.\r\nhttp://json-schema.org/documentation.html"
-      operationId: GetRecommendedFields
-      parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: countryCode
-          in: path
-          description: "Country alpha2 code"
-          required: true
-          schema:
-            type: string
-        - name: configurationName
-          in: path
-          description: The product configuration. Currently "Identity Verification" for all
-            products.
-          required: true
-          schema:
-            type: string
-            default: Identity Verification
-      responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -589,9 +1573,9 @@ paths:
                           Gender:
                             type: string
                         required:
-                          - FirstGivenName
-                          - FirstSurName
                           - DayOfBirth
+                          - FirstGivenName
+                          - FirstSurName
                           - MonthOfBirth
                           - YearOfBirth
                       Location:
@@ -730,291 +1714,440 @@ paths:
                                 type: string
                               YearOfPrint:
                                 type: string
-                              required:
-                                - AuImmiCardNumber
-                                - CitizenshipAcquisitionDay
-                                - CitizenshipAcquisitionMonth
-                                - CitizenshipAcquisitionYear
-                                - CountryOfBirth
-                                - DriverLicenceDayOfExpiry
-                                - DriverLicenceMonthOfExpiry
-                                - DriverLicenceState
-                                - DriverLicenceYearOfExpiry
-                                - FamilyNameAtBirth
-                                - MedicareColor
-                                - MedicareMonthOfExpiry
-                                - MedicareReference
-                                - MedicareYearOfExpiry
-                                - PassportCountry
-                                - PlaceOfBirth
-                                - RegistrationNumber
-                                - RegistrationState
-                                - StockNumber
-        "400":
-          description: Your request could not be processed, there should be more details in
-            the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
-            using an account not configured to be an API user.
-        "408":
-          description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
-            request application/json in the Content-Type header.
-        "500":
-          description: An error happened on the server without a specific message.
-      security:
-        - ApiKeyAuth: []
-  "/{mode}/configuration/v1/consents/{configurationName}/{countryCode}":
-    get:
-      tags:
-        - Configuration
-      summary: Get Consents
-      description: "This method retrieves the consents required for the data sources currently configured in your account
-        configuration. \r\nThe response for this method contains a collection of string that Verify method's
-        ConsentForDataSources field expects to perform a verification using those data sources. \r\nFailure to provide an
-        element from the string collection will lead to a 1005 service error"
-      operationId: GetConsents
-      parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: countryCode
-          in: path
-          description: "Country alpha2 code"
-          required: true
-          schema:
-            type: string
-        - name: configurationName
-          in: path
-          description: The product configuration. Currently "Identity Verification" for all
-            products.
-          required: true
-          schema:
-            type: string
-            default: Identity Verification
-      responses:
-        "200":
-          description: A collection of strings that Verify method's ConsentForDataSources
-            field expects to perform a verification using those data sources.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-              examples:
-                response:
-                  value:
-                    - Australia Driver Licence
-                    - Australia Passport
-                    - Birth Registry
-                    - Visa Verification
-                    - DVS Driver License Search
-                    - DVS Medicare Search
-                    - DVS Passport Search
-                    - DVS Visa Search
-                    - DVS ImmiCard Search
-                    - DVS Citizenship Certificate Search
-                    - DVS Certificate of Registration by Descent Search
-                    - Credit Agency
+                            required:
+                              - AuImmiCardNumber
+                              - CitizenshipAcquisitionDay
+                              - CitizenshipAcquisitionMonth
+                              - CitizenshipAcquisitionYear
+                              - CountryOfBirth
+                              - DriverLicenceDayOfExpiry
+                              - DriverLicenceMonthOfExpiry
+                              - DriverLicenceState
+                              - DriverLicenceYearOfExpiry
+                              - FamilyNameAtBirth
+                              - MedicareColor
+                              - MedicareMonthOfExpiry
+                              - MedicareReference
+                              - MedicareYearOfExpiry
+                              - PassportCountry
+                              - PlaceOfBirth
+                              - RegistrationNumber
+                              - RegistrationState
+                              - StockNumber
             text/json:
               schema:
-                type: array
-                items:
-                  type: string
-        "400":
-          description: Your request could not be processed, there should be more details in
+                type: object
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
             the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
             using an account not configured to be an API user.
-        "408":
+        '408':
           description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
             request application/json in the Content-Type header.
-        "500":
+        '500':
           description: An error happened on the server without a specific message.
       security:
         - ApiKeyAuth: []
-  "/{mode}/configuration/v1/detailedConsents/{configurationName}/{countryCode}":
+  /{mode}/configuration/v1/recommendedfields/{configurationName}/{countryCode}:
     get:
       tags:
         - Configuration
-      summary: Get Detailed Consents
-      description: "This method retrieves details about consents required for data sources
-        currently configured in your account configuration. \r\nThe response for this method contains a collection of objects.\r\nEach object contains the Name of the data source, Text outlining
-        what the user is consenting to, and optionally a Url where the user can
-        find more information about how their data will be used.  \r\nFailure to provide a Name from the object collection will lead
-        to a 1005 service error."
-      operationId: GetDetailedConsents
+      summary: "Generates json schema for the API, the schema is dynamic based on the recommendedFields country and account you are using.\r\nhttp://json-schema.org/documentation.html"
+      operationId: GetRecommendedFields
       parameters:
-        - $ref: "#/components/parameters/mode"
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
         - name: countryCode
           in: path
           description: Call CountryCodes to get the countries available to you.
           required: true
           schema:
             type: string
-        - name: configurationName
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                response:
+                  value:
+                    title: DataFields
+                    type: object
+                    properties:
+                      PersonInfo:
+                        title: PersonInfo
+                        type: object
+                        properties:
+                          FirstGivenName:
+                            type: string
+                          MiddleName:
+                            type: string
+                          FirstSurName:
+                            type: string
+                          DayOfBirth:
+                            type: integer
+                          MonthOfBirth:
+                            type: integer
+                          YearOfBirth:
+                            type: integer
+                          Gender:
+                            type: string
+                        required:
+                          - DayOfBirth
+                          - FirstGivenName
+                          - FirstSurName
+                          - MonthOfBirth
+                          - YearOfBirth
+                      Location:
+                        title: Location
+                        type: object
+                        properties:
+                          BuildingNumber:
+                            type: string
+                          UnitNumber:
+                            type: string
+                          StreetName:
+                            type: string
+                          StreetType:
+                            type: string
+                          Suburb:
+                            type: string
+                          StateProvinceCode:
+                            type: string
+                          PostalCode:
+                            type: string
+                        required:
+                          - BuildingNumber
+                          - PostalCode
+                          - StateProvinceCode
+                          - StreetName
+                      Communication:
+                        title: Communication
+                        type: object
+                        properties:
+                          MobileNumber:
+                            type: string
+                          Telephone:
+                            type: string
+                          EmailAddress:
+                            type: string
+                        required: []
+                      DriverLicence:
+                        title: DriverLicence
+                        type: object
+                        properties:
+                          Number:
+                            type: string
+                        required:
+                          - Number
+                      NationalIds:
+                        title: NationalIds
+                        type: object
+                        properties:
+                          Number:
+                            type: string
+                          Type:
+                            type: string
+                            value: health
+                        required:
+                          - health
+                      Passport:
+                        title: Passport
+                        type: object
+                        properties:
+                          Number:
+                            type: string
+                        required:
+                          - Number
+                      Document:
+                        title: Document
+                        type: object
+                        properties:
+                          DocumentFrontImage:
+                            type: object
+                          DocumentBackImage:
+                            type: object
+                          DocumentType:
+                            type: string
+                        required:
+                          - DocumentFrontImage
+                          - DocumentType
+                      CountrySpecific:
+                        title: CountrySpecific
+                        type: object
+                        properties:
+                          AU:
+                            title: AU
+                            type: object
+                            properties:
+                              AuImmiCardNumber:
+                                type: string
+                              CitizenshipAcquisitionDay:
+                                type: string
+                              CitizenshipAcquisitionMonth:
+                                type: string
+                              CitizenshipAcquisitionYear:
+                                type: string
+                              CountryOfBirth:
+                                type: string
+                              DriverLicenceDayOfExpiry:
+                                type: string
+                              DriverLicenceMonthOfExpiry:
+                                type: string
+                              DriverLicenceState:
+                                type: string
+                              DriverLicenceYearOfExpiry:
+                                type: string
+                              FamilyNameAtBirth:
+                                type: string
+                              MedicareColor:
+                                type: string
+                              MedicareMonthOfExpiry:
+                                type: string
+                              MedicareReference:
+                                type: string
+                              MedicareYearOfExpiry:
+                                type: string
+                              PassportCountry:
+                                type: string
+                              PlaceOfBirth:
+                                type: string
+                              RegistrationNumber:
+                                type: string
+                              RegistrationState:
+                                type: string
+                              StockNumber:
+                                type: string
+                              CertificateNumber:
+                                type: string
+                              DayOfPrint:
+                                type: string
+                              FamilyNameAtCitizenship:
+                                type: string
+                              MedicareDayOfExpiry:
+                                type: string
+                              MonthOfPrint:
+                                type: string
+                              RTACardNumber:
+                                type: string
+                              RegistrationYear:
+                                type: string
+                              YearOfPrint:
+                                type: string
+                            required:
+                              - AuImmiCardNumber
+                              - CitizenshipAcquisitionDay
+                              - CitizenshipAcquisitionMonth
+                              - CitizenshipAcquisitionYear
+                              - CountryOfBirth
+                              - DriverLicenceDayOfExpiry
+                              - DriverLicenceMonthOfExpiry
+                              - DriverLicenceState
+                              - DriverLicenceYearOfExpiry
+                              - FamilyNameAtBirth
+                              - MedicareColor
+                              - MedicareMonthOfExpiry
+                              - MedicareReference
+                              - MedicareYearOfExpiry
+                              - PassportCountry
+                              - PlaceOfBirth
+                              - RegistrationNumber
+                              - RegistrationState
+                              - StockNumber
+            text/json:
+              schema:
+                type: object
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
+            the response.
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
+            using an account not configured to be an API user.
+        '408':
+          description: The request took longer to process than we waited.
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
+            request application/json in the Content-Type header.
+        '500':
+          description: An error happened on the server without a specific message.
+      security:
+        - ApiKeyAuth: []
+  /{mode}/configuration/v1/testentities/{configurationName}/{countryCode}:
+    get:
+      tags:
+        - Configuration
+      summary: Gets the test entities configured for your product and country.
+      operationId: GetTestEntities
+      parameters:
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
+        - name: countryCode
           in: path
-          description: Identity Verification
+          description: Call CountryCodes to get the countries available to you.
           required: true
           schema:
             type: string
-            default: Identity Verification
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Consent"
+                  $ref: '#/components/schemas/TestEntityDataFields'
               examples:
                 response:
                   value:
-                    - Name: Australia Passport
-                      Text: The individual has given consent for their details to be
-                        checked online with the Australian Passport Office.
-                      Url: null
-                    - Name: Visa Verification
-                      Text: The individual has given consent for their details to be
-                        checked online with the Australian Government -
-                        Department of Immigration and Citizenship.
-                      Url: null
+                    - PersonInfo:
+                        FirstGivenName: Adelina
+                        MiddleName: null
+                        FirstSurName: Mancini
+                        SecondSurname: null
+                        ISOLatin1Name: null
+                        DayOfBirth: 4
+                        MonthOfBirth: 7
+                        YearOfBirth: 1978
+                        MinimumAge: null
+                        Gender: M
+                        AdditionalFields: null
+                      Location:
+                        BuildingNumber: '12'
+                        BuildingName: null
+                        UnitNumber: '2'
+                        StreetName: VIA MACEDONIA
+                        StreetType: null
+                        City: NAPOLI
+                        Suburb: null
+                        County: null
+                        StateProvinceCode: NA
+                        Country: null
+                        PostalCode: '80137'
+                        POBox: null
+                        AdditionalFields:
+                          Address1: VIA MACEDONIA 12/2
+                      Communication:
+                        MobileNumber: null
+                        Telephone: '817519358'
+                        Telephone2: null
+                        EmailAddress: null
+                      DriverLicence:
+                        Number: '12'
+                        State: WA
+                        DayOfExpiry: 5
+                        MonthOfExpiry: 1
+                        YearOfExpiry: 2021
+                      NationalIds:
+                        - Number: FBCGQE44Z11T793L
+                          Type: NationalID
+                          DistrictOfIssue: null
+                          CityOfIssue: PALERMO
+                          ProvinceOfIssue: PA
+                          CountyOfIssue: null
+                      Passport:
+                        Mrz1: P<MANCINI<<ADELINA<<<<<<<<<<<<<<<<<<<<<<<<<<
+                        Mrz2: 99003853<1CZE1101018M1207046110101111<<<<<94
+                        Number: YA0000000
+                        DayOfExpiry: 5
+                        MonthOfExpiry: 1
+                        YearOfExpiry: 2021
+                      Document: null
+                      Business: null
+                      CountrySpecific:
+                        IT:
+                          CountryOfBirth: IT
+                          CityOfBirth: POLLA
+                          ProvinceOfBirth: SA
+                          ItIdDocumentType: Identity Card
+                          ItIdDocumentNumber: AC91833762
+                          ItIdDocumentYearOfIssue: '2007'
+                          ItIdDocumentMonthOfIssue: '02'
+                          ItIdDocumentDayOfIssue: '14'
+                          ItIdDocumentCountryOfIssue: IT
+                    - PersonInfo: null
+                      Location: null
+                      Communication: null
+                      DriverLicence: null
+                      NationalIds: null
+                      Passport: null
+                      Document: null
+                      Business:
+                        BusinessName: 006FOUR CONSTRUCTION LIMITED
+                        BusinessRegistrationNumber: '06142357'
+                        DayOfIncorporation: null
+                        MonthOfIncorporation: null
+                        YearOfIncorporation: 2007
+                        JurisdictionOfIncorporation: null
+                        ShareholderListDocument: null
+                        FinancialInformationDocument: null
+                        DunsNumber: null
+                        Entities: null
+                      CountrySpecific: null
             text/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Consent"
-        "400":
-          description: Your request could not be processed, there should be more details in
+                  $ref: '#/components/schemas/TestEntityDataFields'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
             the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
             using an account not configured to be an API user.
-        "408":
+        '408':
           description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
             request application/json in the Content-Type header.
-        "500":
+        '500':
           description: An error happened on the server without a specific message.
       security:
         - ApiKeyAuth: []
-  "/{mode}/configuration/v1/countrysubdivisions/{countryCode}":
+  /{mode}/configuration/v1/datasources/{configurationName}/{countryCode}:
     get:
       tags:
         - Configuration
-      summary: Get Country Subdivisions
-      description: Gets the provinces states or other subdivisions for a country, mostly
-        matches ISO 3166-2
-      operationId: GetCountrySubdivisions
-      parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: countryCode
-          in: path
-          description: "Country alpha2 code"
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: An array of the following object, where each object is the value of
-            a province, state or other subdivision for the given country.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/CountrySubdivision"
-              examples:
-                response:
-                  value:
-                    - Name: Northern Territory
-                      Code: NT
-                      ParentCode: ""
-                    - Name: Western Australia
-                      Code: WA
-                      ParentCode: ""
-                    - Name: New South Wales
-                      Code: NSW
-                      ParentCode: ""
-                    - Name: Queensland
-                      Code: QLD
-                      ParentCode: ""
-                    - Name: South Australia
-                      Code: SA
-                      ParentCode: ""
-                    - Name: Tasmania
-                      Code: TAS
-                      ParentCode: ""
-                    - Name: Victoria
-                      Code: VIC
-                      ParentCode: ""
-                    - Name: Australian Capital Territory
-                      Code: ACT
-                      ParentCode: ""
-            text/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/CountrySubdivision"
-        "400":
-          description: Your request could not be processed, there should be more details in
-            the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
-            using an account not configured to be an API user.
-        "408":
-          description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
-            request application/json in the Content-Type header.
-        "500":
-          description: An error happened on the server without a specific message.
-      security:
-        - ApiKeyAuth: []
-  "/{mode}/configuration/v1/datasources/{configurationName}/{countryCode}":
-    get:
-      tags:
-        - Configuration
-      summary: Get Datasources
-      description: Gets datasource groups configured for your product and country.
+      summary: Gets datasource groups configured for your product and country.
       operationId: GetDatasources
       parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: configurationName
-          in: path
-          description: The product configuration. Currently "Identity Verification" for all
-            products.
-          required: true
-          schema:
-            type: string
-            default: Identity Verification
+        - $ref: '#/components/parameters/mode'
+        - $ref: '#/components/parameters/configurationName'
         - name: countryCode
           in: path
-          description: "Country alpha2 code"
+          description: Call CountryCodes to get the countries available to you.
           required: true
           schema:
             type: string
       responses:
-        "200":
-          description: You will receive an array where each object represents one of the
-            Data source groups that you're configured for in the given country.
-            Each object will have the following structure.
+        '200':
+          description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/NormalizedDatasourceGroupCountry"
+                  $ref: '#/components/schemas/NormalizedDatasourceGroupCountry'
               examples:
                 response:
                   value:
                     - Name: Credit Agency
-                      Description: Consumer Credit Source. Per Australia legislation,
+                      Description: >-
+                        Consumer Credit Source. Per Australia legislation,
                         specific match details are not provided. Only overall
                         match results are shown. The data is based on the credit
                         header data of a permanent or temporary citizen of
@@ -1041,7 +2174,8 @@ paths:
                       UpdateFrequency: null
                       Coverage: 25%
                     - Name: Credit Agency 2
-                      Description: Consumer Credit Source. Per Australia legislation,
+                      Description: >-
+                        Consumer Credit Source. Per Australia legislation,
                         specific match details are not provided. Only overall
                         match results are shown. The data is based on the credit
                         header data of a permanent or temporary citizen of
@@ -1067,473 +2201,275 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/NormalizedDatasourceGroupCountry"
-        "400":
-          description: Your request could not be processed, there should be more details in
+                  $ref: '#/components/schemas/NormalizedDatasourceGroupCountry'
+        '400':
+          description: >-
+            Your request could not be processed, there should be more details in
             the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
+        '401':
+          description: >-
+            The user name and password you provided is not valid or you are
             using an account not configured to be an API user.
-        "408":
+        '408':
           description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
+        '415':
+          description: >-
+            You asked for a media type that we do not support. You should
             request application/json in the Content-Type header.
-        "500":
+        '500':
           description: An error happened on the server without a specific message.
       security:
         - ApiKeyAuth: []
-  "/{mode}/verifications/v1/verify":
-    post:
-      tags:
-        - Verifications
-      summary: Verify
-      description: "Calling this method will perform a verification. If your account
-        includes address cleansing set the CleansedAddress flag to get\r\nadditional address information in the result.  You can query
-        configuration to get what fields are available to you in each
-        country.\r\nIt is also possible to get sample requests from the customer
-        portal. If you are configured for a sandbox account make sure to call Get Test Entities
-        to get test data for a country you want to try.
-        Sandbox accounts only use these test entities and so trying to verify
-        with any other data will result in no matches being
-        found."
-      operationId: Verify
-      parameters:
-        - $ref: "#/components/parameters/mode"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/VerifyRequest"
-          text/json:
-            schema:
-              $ref: "#/components/schemas/VerifyRequest"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/VerifyResult"
-              examples:
-                response:
-                  value:
-                    TransactionID: c03ad3c9-da6b-452c-8a2e-fd1923973b99
-                    UploadedDt: 2015-02-19T13:25:50
-                    CountryCode: null
-                    ProductName: null
-                    Record:
-                      TransactionRecordID: c47d485d-005a-4e0c-8ef0-06f16ddbaeb6
-                      RecordStatus: match
-                      DatasourceResults:
-                        - DatasourceStatus: match
-                          DatasourceName: Consumer Intl
-                          DatasourceFields:
-                            - FieldName: FirstSurName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: FirstGivenName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: City
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: County
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: BuildingName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: BuildingNumber
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: PostalCode
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: StreetName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: StreetType
-                              Status: match
-                              FieldGroup: null
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                        - DatasourceStatus: match
-                          DatasourceName: Resident Files
-                          DatasourceFields:
-                            - FieldName: FirstSurName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: FirstGivenName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: BuildingName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: BuildingNumber
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: City
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: County
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: StreetName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: StreetType
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: PostalCode
-                              Status: match
-                              FieldGroup: null
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                        - DatasourceStatus: match
-                          DatasourceName: International Watchlist
-                          DatasourceFields:
-                            - FieldName: FirstGivenName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: MiddleName
-                              Status: match
-                              FieldGroup: null
-                            - FieldName: FirstSurName
-                              Status: match
-                              FieldGroup: null
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                      Errors:
-                        - Code: "1008"
-                          Message: "Field format invalid: FirstInitial"
-                      Rule: null
-                    CustomerReferenceID: abc-1234
-                    Errors: []
-            text/json:
-              schema:
-                $ref: "#/components/schemas/VerifyResult"
-        "400":
-          description: Your request could not be processed, there should be more details in
-            the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
-            using an account not configured to be an API user.
-        "408":
-          description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
-            request application/json in the Content-Type header.
-        "500":
-          description: An error happened on the server without a specific message.
-      security:
-        - ApiKeyAuth: []
-  "/{mode}/verifications/v1/transactionrecord/{id}":
-    get:
-      tags:
-        - Verifications
-      summary: Get Transaction Record
-      description: "This method is used to retrieve the request and results of a
-        verification performed using the verify method. \r\nThe response for this method includes the same information as
-        verify method's response, along with data present in the input fields of
-        the verify request."
-      operationId: GetTransactionRecord
-      parameters:
-        - $ref: "#/components/parameters/mode"
-        - name: id
-          in: path
-          description: The TransactionRecordID from the Verify response, this will be a GUID
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: The response structure contains the request and response for an
-            historical Verify call. See the Verify section to understand the
-            structure.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionRecordResult"
-              examples:
-                response:
-                  value:
-                    InputFields:
-                      - FieldName: PostalCode
-                        Value: "3108"
-                      - FieldName: Suburb
-                        Value: Doncaster
-                      - FieldName: State
-                        Value: Victoria
-                      - FieldName: YearOfBirth
-                        Value: "1983"
-                      - FieldName: YearOfBirth
-                        Value: "1983"
-                      - FieldName: FirstName
-                        Value: John
-                      - FieldName: MiddleName
-                        Value: Henry
-                      - FieldName: LastName
-                        Value: Smith
-                      - FieldName: DayOfBirth
-                        Value: "5"
-                      - FieldName: MonthOfBirth
-                        Value: "3"
-                      - FieldName: Gender
-                        Value: M
-                      - FieldName: StreetNumber
-                        Value: "10"
-                      - FieldName: UnitNumber
-                        Value: "3"
-                      - FieldName: StreetName
-                        Value: Lawford
-                      - FieldName: StreetType
-                        Value: st
-                      - FieldName: Telephone
-                        Value: 03 9896 8785
-                      - FieldName: EmailAddress
-                        Value: testpersonAU@gdctest.com
-                      - FieldName: DriverLicenceNumber
-                        Value: "076310691"
-                      - FieldName: DriverLicenceState
-                        Value: VIC
-                      - FieldName: DayOfExpiry
-                        Value: "3"
-                      - FieldName: MonthOfExpiry
-                        Value: "4"
-                      - FieldName: YearOfExpiry
-                        Value: "2021"
-                      - FieldName: PassportNumber
-                        Value: N1236548
-                      - FieldName: MedicareNumber
-                        Value: "5643513953"
-                      - FieldName: AuImmiCardNumber
-                        Value: EIS123456
-                      - FieldName: CitizenshipAcquisitionDay
-                        Value: "15"
-                      - FieldName: CitizenshipAcquisitionMonth
-                        Value: "4"
-                      - FieldName: CitizenshipAcquisitionYear
-                        Value: "1987"
-                      - FieldName: CountryOfBirth
-                        Value: Australia
-                      - FieldName: FamilyNameAtBirth
-                        Value: Smith
-                      - FieldName: MedicareColor
-                        Value: Blue
-                      - FieldName: MedicareMonthOfExpiry
-                        Value: "12"
-                      - FieldName: MedicareReference
-                        Value: "2"
-                      - FieldName: MedicareYearOfExpiry
-                        Value: "2017"
-                      - FieldName: PassportCountry
-                        Value: Australia
-                      - FieldName: PlaceOfBirth
-                        Value: Melbourne
-                      - FieldName: RegistrationNumber
-                        Value: "565659"
-                      - FieldName: RegistrationState
-                        Value: NSW
-                      - FieldName: StockNumber
-                        Value: ACD1234567
-                      - FieldName: FirstInitial
-                        Value: J
-                      - FieldName: MiddleInitial
-                        Value: J
-                    UploadedDt: 2017-07-11T21:47:50
-                    Record:
-                      TransactionRecordID: 0ac8ccee-ab7a-495e-8b88-a6da1bdcb6ae
-                      RecordStatus: match
-                      DatasourceResults:
-                        - DatasourceName: Australia Citizen File
-                          DatasourceFields:
-                            - FieldName: BuildingNumber
-                              Status: match
-                            - FieldName: MiddleName
-                              Status: match
-                            - FieldName: StreetName
-                              Status: match
-                            - FieldName: UnitNumber
-                              Status: match
-                            - FieldName: Suburb
-                              Status: match
-                            - FieldName: StreetType
-                              Status: match
-                            - FieldName: Telephone
-                              Status: match
-                            - FieldName: DayOfBirth
-                              Status: match
-                            - FieldName: FirstSurName
-                              Status: match
-                            - FieldName: StateProvinceCode
-                              Status: match
-                            - FieldName: MonthOfBirth
-                              Status: match
-                            - FieldName: PostalCode
-                              Status: match
-                            - FieldName: FirstInitial
-                              Status: match
-                            - FieldName: YearOfBirth
-                              Status: match
-                            - FieldName: FirstGivenName
-                              Status: match
-                            - FieldName: MiddleInitial
-                              Status: match
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                        - DatasourceName: Australia Driver Licence
-                          DatasourceFields:
-                            - FieldName: DriverLicenceDayOfExpiry
-                              Status: match
-                            - FieldName: FirstInitial
-                              Status: match
-                            - FieldName: StreetType
-                              Status: match
-                            - FieldName: DriverLicenceMonthOfExpiry
-                              Status: match
-                            - FieldName: FirstGivenName
-                              Status: match
-                            - FieldName: UnitNumber
-                              Status: match
-                            - FieldName: DriverLicenceYearOfExpiry
-                              Status: match
-                            - FieldName: FirstSurName
-                              Status: match
-                            - FieldName: PostalCode
-                              Status: match
-                            - FieldName: DriverLicenceNumber
-                              Status: match
-                            - FieldName: DayOfBirth
-                              Status: match
-                            - FieldName: StateProvinceCode
-                              Status: match
-                            - FieldName: DriverLicenceState
-                              Status: match
-                            - FieldName: MonthOfBirth
-                              Status: match
-                            - FieldName: Suburb
-                              Status: match
-                            - FieldName: StreetName
-                              Status: match
-                            - FieldName: YearOfBirth
-                              Status: match
-                            - FieldName: RTACardNumber
-                              Status: match
-                            - FieldName: BuildingNumber
-                              Status: match
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                        - DatasourceName: Australia Historical File
-                          DatasourceFields:
-                            - FieldName: StreetName
-                              Status: match
-                            - FieldName: FirstInitial
-                              Status: match
-                            - FieldName: BuildingNumber
-                              Status: match
-                            - FieldName: FirstGivenName
-                              Status: match
-                            - FieldName: StreetType
-                              Status: match
-                            - FieldName: FirstSurName
-                              Status: match
-                            - FieldName: Suburb
-                              Status: match
-                            - FieldName: MiddleInitial
-                              Status: match
-                            - FieldName: Telephone
-                              Status: match
-                            - FieldName: MiddleName
-                              Status: match
-                            - FieldName: UnitNumber
-                              Status: match
-                            - FieldName: PostalCode
-                              Status: match
-                            - FieldName: StateProvinceCode
-                              Status: match
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                        - DatasourceName: Visa Verification
-                          DatasourceFields:
-                            - FieldName: YearOfBirth
-                              Status: match
-                            - FieldName: PassportNumber
-                              Status: match
-                            - FieldName: PassportCountry
-                              Status: match
-                            - FieldName: FirstGivenName
-                              Status: match
-                            - FieldName: FirstSurName
-                              Status: match
-                            - FieldName: MiddleName
-                              Status: match
-                            - FieldName: DayOfBirth
-                              Status: match
-                            - FieldName: FirstInitial
-                              Status: match
-                            - FieldName: MonthOfBirth
-                              Status: match
-                            - FieldName: MiddleInitial
-                              Status: match
-                          AppendedFields: []
-                          Errors: []
-                          FieldGroups: []
-                      Errors: []
-                    Errors: []
-            text/json:
-              schema:
-                $ref: "#/components/schemas/TransactionRecordResult"
-        "400":
-          description: Your request could not be processed, there should be more details in
-            the response.
-        "401":
-          description: The user name and password you provided is not valid or you are
-            using an account not configured to be an API user.
-        "408":
-          description: The request took longer to process than we waited.
-        "415":
-          description: You asked for a media type that we do not support. You should
-            request application/json in the Content-Type header.
-        "500":
-          description: An error happened on the server without a specific message.
-      security:
-        - ApiKeyAuth: []
+servers:
+  - url: https://gateway.trulioo.com
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: x-trulioo-api-key
-  parameters:
-    mode: 
-      in: path
-      name: mode
-      description: free trial or live
-      schema:
-        type: string
-        default: trial
-      required: true
   schemas:
+    BusinessSearchRequest:
+      description: ''
+      required:
+        - CountryCode
+      type: object
+      properties:
+        AcceptTruliooTermsAndConditions:
+          description: Indicate that Trulioo terms and conditions are accepted
+          type: boolean
+        CallBackUrl:
+          maxLength: 2083
+          minLength: 0
+          type: string
+        Timeout:
+          format: int32
+          type: integer
+        ConsentForDataSources:
+          description: "Some datasources required your customer provide consent to access them.  Set that the customer has provided consent for each\r\ndatasource that requires one.  If consent is not provided the datasource will not be queried."
+          type: array
+          items:
+            type: string
+        Business:
+          $ref: '#/components/schemas/BusinessSearchRequest_BusinessSearchModel'
+        CountryCode:
+          description: The country code for which the verification needs to be performed.
+          type: string
+      example:
+        AcceptTruliooTermsAndConditions: true
+        Business:
+          BusinessName: ACME Consulting
+        CountryCode: US
+    Location:
+      description: ''
+      type: object
+      properties:
+        BuildingNumber:
+          description: House / Civic / Building number of home address
+          type: string
+        BuildingName:
+          description: Name of building of home address
+          type: string
+        UnitNumber:
+          description: Flat/Unit/Apartment number of home address
+          type: string
+        StreetName:
+          description: Street name of primary residence
+          type: string
+        StreetType:
+          description: Street type of primary residence (e.g. St, Rd etc)
+          type: string
+        City:
+          description: City of home address
+          type: string
+        Suburb:
+          description: Suburb / Subdivision / Municipality of home address
+          type: string
+        County:
+          description: County / District of home address
+          type: string
+        StateProvinceCode:
+          description: >-
+            State of primary residence. US sources expect 2 characters.
+            Australian sources expect 2 or 3 characters.
+          type: string
+        Country:
+          description: Country of physical address (ISO 3166-1 alpha-2)
+          type: string
+        PostalCode:
+          description: ZIP Code or Postal Code of home address
+          type: string
+        POBox:
+          description: Post Office Box
+          type: string
+        AdditionalFields:
+          $ref: '#/components/schemas/LocationAdditionalFields'
+    LocationAdditionalFields:
+      description: Additional Fields for Location
+      type: object
+      properties:
+        Address1:
+          description: "Address1 is available in certain countries. It can be used to pass a compiled address field instead of sending individual address attributes (such as UnitNumber, BuidlingNumber, BuildingName, StreetName and StreetType). \r\nGlobalGateway will provide a pass through of Address1 directly to connected datasources for the selected country. \r\nPlease note: each datasource requires the address fields to be configured in a certain manner, implementing and sending Address1 instead of individual address fields may affect your ability to verify this address."
+          type: string
+    BusinessSearchResponse:
+      description: ''
+      type: object
+      properties:
+        TransactionID:
+          description: The id for the transaction it will be a GUID
+          type: string
+        UploadedDt:
+          format: date-time
+          description: Time in UTC
+          type: string
+        CountryCode:
+          description: The country code for which the verification was performed.
+          type: string
+        ProductName:
+          description: Product Name
+          type: string
+        Record:
+          $ref: '#/components/schemas/BusinessRecord'
+        Errors:
+          description: Collection of record errors
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceError'
+    BusinessRecord:
+      description: ''
+      type: object
+      properties:
+        TransactionRecordID:
+          description: >-
+            The TransactionRecordID, this is the ID you will use to fetch the
+            transaction again.
+          type: string
+        RecordStatus:
+          description: >-
+            'match' or 'nomatch' if the verification passed the rules configured
+            on your account this will be 'match'.
+          type: string
+        DatasourceResults:
+          description: Results for each datasource that was queried
+          type: array
+          items:
+            $ref: '#/components/schemas/BusinessResult'
+        Errors:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceError'
     ServiceError:
-      description: ""
+      description: ''
       type: object
       properties:
         Code:
-          description: ""
+          description: ''
           type: string
         Message:
-          description: ""
+          description: ''
           type: string
+    BusinessResult:
+      description: ''
+      type: object
+      properties:
+        Results:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Result'
+        DatasourceName:
+          description: ''
+          type: string
+        Errors:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceError'
+          readOnly: true
+    Result:
+      type: object
+      properties:
+        Index:
+          description: ''
+          type: string
+        BusinessName:
+          description: ''
+          type: string
+        MatchingScore:
+          description: ''
+          type: string
+        BusinessRegistrationNumber:
+          description: ''
+          type: string
+        DUNSNumber:
+          description: ''
+          type: string
+        BusinessTaxIDNumber:
+          description: ''
+          type: string
+        BusinessLicenseNumber:
+          description: ''
+          type: string
+        JurisdictionOfIncorporation:
+          description: ''
+          type: string
+        FullAddress:
+          description: ''
+          type: string
+        BusinessStatus:
+          description: Business Status
+          type: string
+        TradeStyleName:
+          description: Trade Style Name
+          type: string
+        BusinessType:
+          description: Business Type
+          type: string
+        Address:
+          $ref: '#/components/schemas/Address'
+        OtherBusinessNames:
+          description: ''
+          type: array
+          items:
+            type: string
+        Website:
+          description: ''
+          type: string
+        Telephone:
+          description: ''
+          type: string
+        TaxIDNumber:
+          description: ''
+          type: string
+        TaxIDNumbers:
+          description: ''
+          type: array
+          items:
+            type: string
+        EmailAddress:
+          description: ''
+          type: string
+        WebDomain:
+          description: ''
+          type: string
+        WebDomains:
+          description: ''
+          type: array
+          items:
+            type: string
+        NAICS:
+          description: North American Industry Classification System
+          type: array
+          items:
+            $ref: '#/components/schemas/BusinessSearchResponseIndustryCode'
+        SIC:
+          description: Standard Industrial Classification
+          type: array
+          items:
+            $ref: '#/components/schemas/BusinessSearchResponseIndustryCode'
     Address:
-      description: ""
+      description: ''
       type: object
       properties:
         UnitNumber:
@@ -1558,25 +2494,37 @@ components:
           description: Suburb / Subdivision / Municipality
           type: string
         StateProvinceCode:
-          description: State or province of address. US sources expect 2 characters.
+          description: >-
+            State or province of address. US sources expect 2 characters.
             Australian sources expect 2 or 3 characters.
           type: string
         PostalCode:
           description: ZIP Code or Postal Code
           type: string
         Address1:
-          description: It can be used to pass a compiled address field instead of sending
-            individual address attributes (such as UnitNumber, BuidlingNumber,
-            BuildingName, StreetName and StreetType)
+          description: Address1
           type: string
         AddressType:
-          description: Type of address
+          description: Address Type
           type: string
         StateProvince:
-          description: State or province of address
+          description: State Province
+          type: string
+        Country:
+          description: ''
+          type: string
+        CountryCode:
+          description: ''
+          type: string
+    BusinessSearchResponseIndustryCode:
+      type: object
+      properties:
+        Code:
+          type: string
+        Description:
           type: string
     Consent:
-      description: ""
+      description: Consents required from datasource
       type: object
       properties:
         Name:
@@ -1586,7 +2534,8 @@ components:
           description: Text outlining how the user is consenting for their data to be used
           type: string
         Url:
-          description: URL where the user can find more information about how the
+          description: >-
+            URL where the user can find more information about how the
             datasource will use their data
           type: string
     CountrySubdivision:
@@ -1595,62 +2544,103 @@ components:
       properties:
         Name:
           description: Name of the area, in english or one of the languages of the country
+          maxLength: 100
+          minLength: 0
           type: string
         Code:
           description: Code for the area
+          maxLength: 100
+          minLength: 0
           type: string
         ParentCode:
-          description: Code of the parent entity
+          maxLength: 5
+          minLength: 0
           type: string
-    DataFields:
-      description: The data field name-value pairs for the data elements on which the
-        verification is to be performed
+    BusinessRegistrationNumber:
+      description: ''
       type: object
       properties:
+        Name:
+          description: The name of the business registration number
+          maxLength: 512
+          minLength: 0
+          type: string
+        Description:
+          description: Brief description of the business registration number
+          maxLength: 512
+          minLength: 0
+          type: string
+        Country:
+          description: Country to which the business registration number applies
+          maxLength: 512
+          minLength: 0
+          type: string
+        Jurisdiction:
+          description: >-
+            Optional jurisdiction to which the business registration number
+            applies
+          maxLength: 512
+          minLength: 0
+          type: string
+        Supported:
+          description: >-
+            Whether the business registration number is supported by Trulioo's
+            systems
+          type: boolean
+        Type:
+          description: The specified type of this business registration number
+          maxLength: 512
+          minLength: 0
+          type: string
+        Masks:
+          description: The mask(s) describing this business registration number
+          type: array
+          items:
+            $ref: '#/components/schemas/BusinessRegistrationNumberMask'
+    BusinessRegistrationNumberMask:
+      description: ''
+      type: object
+      properties:
+        Mask:
+          description: >-
+            The mask used to validate the format of the business registration
+            number
+          maxLength: 512
+          minLength: 0
+          type: string
+        IgnoreWhitespace:
+          description: Flag showing whether we can ignore whitespace
+          type: boolean
+        IgnoreSpecialCharacter:
+          description: Flag showing whether we can ignore special character
+          type: boolean
+    TestEntityDataFields:
+      type: object
+      properties:
+        TestEntityName:
+          description: Friendly name for the test entity
+          type: string
         PersonInfo:
-          $ref: "#/components/schemas/PersonInfo"
+          $ref: '#/components/schemas/PersonInfo'
         Location:
-          $ref: "#/components/schemas/Location"
+          $ref: '#/components/schemas/Location'
         Communication:
-          $ref: "#/components/schemas/Communication"
+          $ref: '#/components/schemas/Communication'
         DriverLicence:
-          $ref: "#/components/schemas/DriverLicence"
+          $ref: '#/components/schemas/DriverLicence'
         NationalIds:
           description: National Identification Information
           type: array
           items:
-            $ref: "#/components/schemas/NationalId"
+            $ref: '#/components/schemas/NationalId'
         Passport:
-          $ref: "#/components/schemas/Passport"
+          $ref: '#/components/schemas/Passport'
+        Document:
+          $ref: '#/components/schemas/Document'
+        Business:
+          $ref: '#/components/schemas/Business'
         CountrySpecific:
-          description: "CountrySpecific fields\r\n\"CountryCode\": {\r\n\t\"Field1\" : \"Value\",\r\n\t\"Field2\" : \"Value\"\r\n} \nCall <a class=\"link-to-api\" href=\"#getfields-2\">Get Fields</a> to get the list of fields that are valid for your configuration."
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              type: string
-    DataFieldsKYC:
-      description: The data field name-value pairs for the data elements on which the
-        verification is to be performed
-      type: object
-      properties:
-        PersonInfo:
-          $ref: "#/components/schemas/PersonInfo"
-        Location:
-          $ref: "#/components/schemas/Location"
-        Communication:
-          $ref: "#/components/schemas/Communication"
-        DriverLicence:
-          $ref: "#/components/schemas/DriverLicence"
-        NationalIds:
-          description: "National Identification Information.\nSupported Types: NationalID, Health, SocialService, TaxIDNumber.\n See <a class=\"link-to-api\" href=\"https://developer.trulioo.com/docs/national-ids-supported-types\">Supported NationalIDs</a> to understand the Type to send with the ID number."
-          type: array
-          items:
-            $ref: "#/components/schemas/NationalId"
-        Passport:
-          $ref: "#/components/schemas/Passport"
-        CountrySpecific:
-          description: "CountrySpecific fields\r\n\"CountryCode\": {\r\n\t\"Field1\" : \"Value\",\r\n\t\"Field2\" : \"Value\"\r\n} \nCall <a class=\"link-to-api\" href=\"#getfields-2\">Get Fields</a> to get the list of fields that are valid for your configuration."
+          description: "CountrySpecific fields\r\n{\"CountryCode\" : {\"Field1\" : \"Value\",\r\n\"Field2\" : \"Value\"\r\n}}"
           type: object
           additionalProperties:
             type: object
@@ -1661,189 +2651,216 @@ components:
       type: object
       properties:
         FirstGivenName:
-          description: First name of the individual to be verified. Dual purpose First Name
-            or Initial.
+          description: First name of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
         MiddleName:
-          description: Second given name of the individual to be verified. Dual purpose
-            Middle Name or Initial.
+          description: Second given name of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
         FirstSurName:
-          description: First (paternal) family name of the individual to be verified.
+          description: First (paternal) family name of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
         SecondSurname:
-          description: Second family name of the individual to be verified.
+          description: second family name of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
         ISOLatin1Name:
-          description: Enter full name in ISO Latin-1 character set. Used for data sources
-            that require the person’s name in ISO Latin-1 format (i.e. as
-            Passport MRZ).
+          description: Enter full name in ISO Latin-1 character set
+          maxLength: 200
+          minLength: 0
           type: string
         DayOfBirth:
           format: int32
-          description: Day of birth date (i.e. 23 for a date of birth of 23/11/1975).
+          description: Day of birth date (e.g. 23 for a date of birth of 23/11/1975)
           type: integer
         MonthOfBirth:
           format: int32
-          description: Month of birth date (i.e. 11 for a date of birth of 23/11/1975).
+          description: Month of birth date (e.g. 11 for a date of birth of 23/11/1975)
           type: integer
         YearOfBirth:
           format: int32
-          description: Year of birth date (i.e. 1975 for a date of birth of 23/11/1975).
+          description: Year of birth date (e.g. 1975 for a date of birth of 23/11/1975)
           type: integer
         MinimumAge:
           format: int32
-          description: Minimum permitted age of the individual. GlobalGateway calculates
-            age of individual and compares it to this number.
+          description: Minimum permitted age of the individual
           type: integer
         Gender:
-          description: Single character M / F (M = Male, F = Female).
+          description: Single character M / F (M = Male, F = Female)
           type: string
         AdditionalFields:
-          $ref: "#/components/schemas/PersonInfoAdditionalFields"
-    Location:
-      description: ""
-      type: object
-      properties:
-        BuildingNumber:
-          description: House / Civic / Building number of home address.
-          type: string
-        BuildingName:
-          description: Name of building of home address.
-          type: string
-        UnitNumber:
-          description: Flat/Unit/Apartment number of home address.
-          type: string
-        StreetName:
-          description: Street name of home address.
-          type: string
-        StreetType:
-          description: Street type of home address (Typically St, Rd etc).
-          type: string
-        City:
-          description: City of home address.
-          type: string
-        Suburb:
-          description: Suburb / Subdivision / Municipality of home address.
-          type: string
-        County:
-          description: County / District of home address.
-          type: string
-        StateProvinceCode:
-          description: "State of home address. US sources expect 2 characters. Australian sources expect 2 or 3 characters. Can be gotten using the <a class=\"link-to-api\" href=\"#get-country-subdivisions\">Get Country Subdivisions</a> call."
-          type: string
-        Country:
-          description: Country of home address (ISO 3166-1 alpha-2 code).
-          type: string
-        PostalCode:
-          description: ZIP Code or Postal Code of home address.
-          type: string
-        POBox:
-          description: Post Office Box.
-          type: string
-        AdditionalFields:
-          $ref: "#/components/schemas/LocationAdditionalFields"
+          $ref: '#/components/schemas/PersonInfoAdditionalFields'
     Communication:
-      description: ""
+      description: ''
       type: object
       properties:
         MobileNumber:
-          description: Mobile phone number of the individual to be verified.
+          description: Mobile phone number
+          maxLength: 200
+          minLength: 0
           type: string
         Telephone:
-          description: Telephone number of the individual to be verified.
+          description: Telephone number of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
         Telephone2:
-          description: Additional Phone/Mobile Number of the individual to be verified.
+          description: Additional Phone/Mobile Number of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
         EmailAddress:
-          description: Email address of the individual to be verified.
+          description: Email address of the individual to be verified
+          maxLength: 200
+          minLength: 0
           type: string
     DriverLicence:
-      description: ""
+      description: ''
       type: object
       properties:
         Number:
-          description: Driver's Licence Number of the individual to be verified.
+          description: Driver's Licence Number of the individual to be verified
           type: string
         State:
-          description: State of issue for driver's Licence.
+          description: State of issue for Driver's Licence
           type: string
         DayOfExpiry:
           format: int32
-          description: Driver's Licence day of expiry of the individual to be verified.
+          description: Driver's Licence day of expiry of the individual to be verified
           type: integer
         MonthOfExpiry:
           format: int32
-          description: Driver's Licence month of expiry of the individual to be verified.
+          description: Driver's Licence month of expiry of the individual to be verified
           type: integer
         YearOfExpiry:
           format: int32
-          description: Driver's Licence year of expiry of the individual to be verified.
+          description: Driver's Licence year of expiry of the individual to be verified
           type: integer
     NationalId:
-      description: ""
-      required:
-        - Number
-        - Type
+      description: ''
       type: object
       properties:
         Number:
-          description: ""
+          description: ''
           type: string
         Type:
-          description: "Supported Types: NationalID, Health, SocialService, TaxIDNumber."
+          description: 'Supported Types: NationalID, Health, SocialService, TaxIDNumber'
           type: string
         DistrictOfIssue:
-          description: District that issued the ID.
+          description: District that issued the ID
           type: string
         CityOfIssue:
-          description: City that issued the ID.
+          description: City that issued the ID
           type: string
         ProvinceOfIssue:
-          description: Province that issued the ID.
+          description: Province that issued the ID
           type: string
         CountyOfIssue:
-          description: County that issued the ID.
+          description: County that issued the ID
           type: string
     Passport:
-      description: ""
+      description: ''
       type: object
       properties:
         Mrz1:
-          description: Line 1 of the passport MRZ.
+          description: Line 1 of the passport MRZ
+          maxLength: 200
+          minLength: 0
           type: string
         Mrz2:
-          description: Line 2 of the passport MRZ.
+          description: line 2 of the passport MRZ
+          maxLength: 200
+          minLength: 0
           type: string
         Number:
-          description: Passport Number.
+          description: Passport Number
           type: string
         DayOfExpiry:
           format: int32
-          description: Passport's Licence day of expiry of the individual to be verified.
+          description: Passport's Licence day of expiry of the individual to be verified
           type: integer
         MonthOfExpiry:
           format: int32
-          description: Passport's Licence month of expiry of the individual to be verified.
+          description: Passport's Licence month of expiry of the individual to be verified
           type: integer
         YearOfExpiry:
           format: int32
-          description: Passport's Licence year of expiry of the individual to be verified.
+          description: Passport's Licence year of expiry of the individual to be verified
           type: integer
+    Document:
+      description: ''
+      type: object
+      properties:
+        DocumentFrontImage:
+          format: byte
+          description: Front of the document
+          type: string
+        DocumentBackImage:
+          format: byte
+          description: Back of the document
+          type: string
+        LivePhoto:
+          format: byte
+          description: Selfie image
+          type: string
+        DocumentType:
+          description: Document type
+          type: string
+        AcceptIncompleteDocument:
+          description: Accept Incomplete Document
+          type: boolean
+        ValidateDocumentImageQuality:
+          description: Validate Document Image Quality
+          type: boolean
+    Business:
+      description: ''
+      type: object
+      properties:
+        BusinessName:
+          description: Name of the business to be verified
+          type: string
+        BusinessRegistrationNumber:
+          description: Registration number of business to be verified
+          type: string
+        DayOfIncorporation:
+          format: int32
+          description: Day of incorporation of the business to be verified
+          type: integer
+        MonthOfIncorporation:
+          format: int32
+          description: Month of incorporation of the business to be verified
+          type: integer
+        YearOfIncorporation:
+          format: int32
+          description: Year of incorporation of the business to be verified
+          type: integer
+        JurisdictionOfIncorporation:
+          description: Jurisdiction Of Incorporation of the business to be verified
+          type: string
+        ShareholderListDocument:
+          description: Whether or not to retrieve shareholderList document
+          type: boolean
+        FinancialInformationDocument:
+          description: Whether or not to retrieve financial information document
+          type: boolean
+        DunsNumber:
+          description: Duns Number
+          type: string
+        Entities:
+          description: Whether or not to retrieve entity detail
+          type: boolean
     PersonInfoAdditionalFields:
-      description: ""
+      description: ''
       type: object
       properties:
         FullName:
-          description: Full name of the individual to be verified.
-          type: string
-    LocationAdditionalFields:
-      description: Additional Fields for Location
-      type: object
-      properties:
-        Address1:
-          description: "Address1 is available in certain countries. It can be used to pass a compiled address field instead of sending individual address attributes (such as UnitNumber, BuidlingNumber, BuildingName, StreetName and StreetType). \r\nGlobalGateway will provide a pass through of Address1 directly to connected datasources for the selected country. \r\nPlease note: each datasource requires the address fields to be configured in a certain manner, implementing and sending Address1 instead of individual address fields may affect your ability to verify this address."
+          description: Full name of of the individual to be verified
           type: string
     NormalizedDatasourceGroupCountry:
       description: Datasource group config for country
@@ -1851,73 +2868,95 @@ components:
       properties:
         Name:
           description: Name
+          maxLength: 200
+          minLength: 0
           type: string
         Description:
           description: Description
+          maxLength: 500
+          minLength: 0
           type: string
         RequiredFields:
           description: Required Fields
           type: array
           items:
-            $ref: "#/components/schemas/NormalizedDatasourceField"
+            $ref: '#/components/schemas/NormalizedDatasourceField'
         OptionalFields:
           description: Optional Fields
           type: array
           items:
-            $ref: "#/components/schemas/NormalizedDatasourceField"
+            $ref: '#/components/schemas/NormalizedDatasourceField'
         AppendedFields:
           description: Appended Fields
           type: array
           items:
-            $ref: "#/components/schemas/NormalizedDatasourceField"
+            $ref: '#/components/schemas/NormalizedDatasourceField'
         OutputFields:
           description: Output Fields
           type: array
           items:
-            $ref: "#/components/schemas/NormalizedDatasourceField"
+            $ref: '#/components/schemas/NormalizedDatasourceField'
         SourceType:
           description: Source Type
+          maxLength: 250
+          minLength: 0
           type: string
         UpdateFrequency:
           description: Update Frequency
+          maxLength: 64
+          minLength: 0
           type: string
         Coverage:
           description: Coverage
+          maxLength: 64
+          minLength: 0
           type: string
     NormalizedDatasourceField:
-      description: ""
+      description: ''
       type: object
       properties:
         FieldName:
           description: Field Name
+          maxLength: 64
+          minLength: 0
           type: string
         Type:
           description: Type
+          maxLength: 250
+          minLength: 0
           type: string
     TransactionStatus:
       description: Transaction Status
       type: object
       properties:
         TransactionId:
-          description: Transaction ID of the transaction.
+          description: Transaction ID of the transaction
+          maxLength: 36
+          minLength: 0
           type: string
         TransactionRecordId:
-          description: Transaction Record ID of the transaction available once the
-            transaction has finished processing.
+          description: >-
+            Transaction Record ID of the transaction available once the
+            transaction has finished processing
+          maxLength: 36
+          minLength: 0
           type: string
         Status:
-          description: "Status of the transaction. Possible Values: Uploading, Processing,
+          description: >-
+            Status of the transaction. Possible Values: Uploading, Processing,
             Completed, InProgress, Failed, WaitAsync, ToBeResumed, Canceled,
             TimeoutCanceled. Call GetTransactionRecord when status changes to
             Completed, Failed, Canceled or TimeoutCanceled to get the
-            verification results."
+            verification results.
+          maxLength: 25
+          minLength: 0
           type: string
         UploadedDt:
           format: date-time
-          description: Uploaded date for transaction.
+          description: Uploaded date for transaction
           type: string
         IsTimedOut:
-          description: Set to true when transaction has timed out.
+          description: Set to true when transaction has timed out
           type: boolean
     VerifyRequest:
       description: The verification call for the Normalized API is a POST method call
@@ -1927,88 +2966,162 @@ components:
       type: object
       properties:
         AcceptTruliooTermsAndConditions:
-          description: Indicate that Trulioo terms and conditions are accepted.\nThe Verification request will be executed only if the value of this header is passed as 'true'.
+          description: Indicate that Trulioo terms and conditions are accepted
+          type: boolean
+        Demo:
+          description: >-
+            This field is not used anymore.  If provided it must match the
+            setting on your account or you will get an error.
           type: boolean
         CallBackUrl:
-          description: If set, the transaction will run asyncronously and trulioo will try
-            to update the client with transaction state updates until completed.
           maxLength: 2083
           minLength: 0
           type: string
         Timeout:
-          description: If set, trulioo will try to update the client syncronously within
-            the timeout in seconds. If failed to accomplish, the transaction
-            will be canceled.
           format: int32
           type: integer
         CleansedAddress:
-          description: Set to true if you want to receive address cleanse information. This
-            will only change the response if you have address cleansing enabled
-            for the country you are querying for.
+          description: "Set to true if you want to receive address cleanse information,\r\nThis will only change the response if you have address cleansing enabled for the country you are querying for."
           type: boolean
         ConfigurationName:
-          description: Indicate the configuration used for the verification. Currently only
-            'Identity Verification' is supported.\nDefault value will be "Identity Verification"
+          description: >-
+            Indicate the configuration used for the verification. Currently
+            only  'Identity Verification' is supported.
           maxLength: 45
           minLength: 0
           type: string
         ConsentForDataSources:
-          description: "Some datasources require your customer provide consent to access them. For each datasource that requires consent, send the requred string if your customer has provided it. A list of these required strings for a country can be gotten by the <a class=\"link-to-api\" href=\"#get-consents\">Get Consents</a> call. If consent is not provided the datasource will not be queried."
+          description: "Some datasources required your customer provide consent to access them.  Set that the customer has provided consent for each\r\ndatasource that requires one.  If consent is not provided the datasource will not be queried."
           type: array
           items:
             type: string
         CountryCode:
-          description: "Country alpha2 code"
+          description: The country code for which the verification needs to be performed.
           type: string
         CustomerReferenceID:
-          description: Use this field to send any internal reference ID to GlobalGateway.
-            It will be contained in the response so it is simple to link
-            Trulioo's API to your system.
+          description: Customer Reference Id
+          maxLength: 128
+          minLength: 0
           type: string
         DataFields:
-          $ref: "#/components/schemas/DataFields"
+          $ref: '#/components/schemas/DataFields'
         VerboseMode:
           description: Verbose Mode Output Flag.
           type: boolean
       example:
-        AcceptTruliooTermsAndConditions: true
-        CleansedAddress: false
-        ConfigurationName: Identity Verification
-        ConsentForDataSources:
-          - Visa Verification
-        CountryCode: AU
-        DataFields:
-          PersonInfo:
-            FirstGivenName: J
-            FirstSurName: Smith
-            MiddleName: Henry
-            DayOfBirth: 5
-            MonthOfBirth: 3
-            YearOfBirth: 1983
-            MinimumAge: 0
-          Location:
-            BuildingNumber: "10"
-            PostalCode: "3108"
-            StateProvinceCode: "VIC"
-            StreetName: Lawford
-            StreetType: "St"
-            Suburb: "Doncaster"
-            UnitNumber: "3"
-          Communication:
-            EmailAddress: "testpersonAU%40gdctest.com"
-            Telephone: "03 9896 8785"
-          Passport:
-            Number: N1236548
+        - AcceptTruliooTermsAndConditions: true
+          Demo: true
+          CleansedAddress: false
+          ConfigurationName: Identity Verification
+          ConsentForDataSources:
+            - DataSource Name 1
+            - DataSource Name 2
+          CountryCode: IT
+          DataFields:
+            PersonInfo:
+              FirstGivenName: Adelina
+              FirstSurName: Mancini
+              DayOfBirth: 4
+              MonthOfBirth: 7
+              YearOfBirth: 1978
+              Gender: M
+            Location:
+              BuildingNumber: '12'
+              UnitNumber: '2'
+              StreetName: VIA MACEDONIA
+              City: NAPOLI
+              StateProvinceCode: NA
+              PostalCode: '80137'
+              AdditionalFields:
+                Address1: VIA MACEDONIA 12/2
+            Communication:
+              Telephone: '817519358'
+            DriverLicence:
+              Number: '12'
+              State: WA
+              DayOfExpiry: 5
+              MonthOfExpiry: 1
+              YearOfExpiry: 2021
+            NationalIds:
+              - Number: FBCGQE44Z11T793L
+                Type: NationalID
+                CityOfIssue: PALERMO
+                ProvinceOfIssue: PA
+            Passport:
+              Mrz1: P<MANCINI<<ADELINA<<<<<<<<<<<<<<<<<<<<<<<<<<
+              Mrz2: 99003853<1CZE1101018M1207046110101111<<<<<94
+              Number: YA0000000
+              DayOfExpiry: 5
+              MonthOfExpiry: 1
+              YearOfExpiry: 2021
+            CountrySpecific:
+              IT:
+                CountryOfBirth: IT
+                CityOfBirth: POLLA
+                ProvinceOfBirth: SA
+                ItIdDocumentType: Identity Card
+                ItIdDocumentNumber: AC91833762
+                ItIdDocumentYearOfIssue: '2007'
+                ItIdDocumentMonthOfIssue: '02'
+                ItIdDocumentDayOfIssue: '14'
+                ItIdDocumentCountryOfIssue: IT
+          VerboseMode: false
+        - AcceptTruliooTermsAndConditions: true
+          Demo: true
+          CleansedAddress: false
+          ConfigurationName: Identity Verification
+          ConsentForDataSources:
+            - DataSource Name 1
+            - DataSource Name 2
+          CountryCode: IT
+          DataFields:
+            Business:
+              BusinessName: 006FOUR CONSTRUCTION LIMITED
+              BusinessRegistrationNumber: '06142357'
+              YearOfIncorporation: 2007
+          VerboseMode: false
+    DataFields:
+      description: >-
+        The data field name-value pairs for the data elements on which the
+        verification is to be performed
+      type: object
+      properties:
+        PersonInfo:
+          $ref: '#/components/schemas/PersonInfo'
+        Location:
+          $ref: '#/components/schemas/Location'
+        Communication:
+          $ref: '#/components/schemas/Communication'
+        DriverLicence:
+          $ref: '#/components/schemas/DriverLicence'
+        NationalIds:
+          description: National Identification Information
+          type: array
+          items:
+            $ref: '#/components/schemas/NationalId'
+        Passport:
+          $ref: '#/components/schemas/Passport'
+        Document:
+          $ref: '#/components/schemas/Document'
+        Business:
+          $ref: '#/components/schemas/Business'
+        CountrySpecific:
+          description: "CountrySpecific fields\r\n{\"CountryCode\" : {\"Field1\" : \"Value\",\r\n\"Field2\" : \"Value\"\r\n}}"
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
     VerifyResult:
-      description:
+      description: ''
       type: object
       properties:
         TransactionID:
-          description: The id for the transaction it will be a GUID.
+          description: The id for the transaction it will be a GUID
           type: string
         UploadedDt:
           format: date-time
-          description: Time in UTC.
+          description: Time in UTC
           type: string
         CountryCode:
           description: Country Code
@@ -2017,67 +3130,68 @@ components:
           description: Product Name
           type: string
         Record:
-          $ref: "#/components/schemas/Record"
-          description: ""
+          $ref: '#/components/schemas/Record'
         CustomerReferenceID:
-          description: Customer Reference ID
+          description: Customer Reference Id
           type: string
         Errors:
-          description: "See <a class=\"link-to-api\" href=\"#section-service-errors\">Errors</a> for explanation of any error encountered."
+          description: ''
           type: array
           items:
-            $ref: "#/components/schemas/ServiceError"
+            $ref: '#/components/schemas/ServiceError'
     Record:
-      description: ""
+      description: ''
       type: object
       properties:
         TransactionRecordID:
-          description: The TransactionRecordID, this is the ID you will use to fetch the
+          description: >-
+            The TransactionRecordID, this is the ID you will use to fetch the
             transaction again.
           type: string
         RecordStatus:
-          description: "'match' or 'nomatch' if the verification passed the rules
-            configured on your account this will be 'match'."
+          description: >-
+            'match' or 'nomatch' if the verification passed the rules configured
+            on your account this will be 'match'.
           type: string
         DatasourceResults:
-          description: Results for each datasource that was queried.
+          description: Results for each datasource that was queried
           type: array
           items:
-            $ref: "#/components/schemas/DatasourceResult"
+            $ref: '#/components/schemas/DatasourceResult'
         Errors:
-          description: ""
+          description: ''
           type: array
           items:
-            $ref: "#/components/schemas/ServiceError"
+            $ref: '#/components/schemas/ServiceError'
         Rule:
-          $ref: "#/components/schemas/RecordRule"
+          $ref: '#/components/schemas/RecordRule'
     DatasourceResult:
       description: A result from a particular datasource
       type: object
       properties:
         DatasourceStatus:
-          description: ""
+          description: ''
           type: string
         DatasourceName:
-          description: ""
+          description: ''
           type: string
         DatasourceFields:
-          description: ""
+          description: ''
           type: array
           items:
-            $ref: "#/components/schemas/DatasourceField"
+            $ref: '#/components/schemas/DatasourceField'
         AppendedFields:
-          description: ""
+          description: ''
           type: array
           items:
-            $ref: "#/components/schemas/AppendedField"
+            $ref: '#/components/schemas/AppendedField'
         Errors:
-          description: ""
+          description: ''
           type: array
           items:
-            $ref: "#/components/schemas/ServiceError"
+            $ref: '#/components/schemas/ServiceError'
         FieldGroups:
-          description: ""
+          description: ''
           type: array
           items:
             type: string
@@ -2092,51 +3206,96 @@ components:
           description: Rule Description.
           type: string
     DatasourceField:
-      description: ""
+      description: ''
       type: object
       properties:
         FieldName:
-          description: ""
+          description: ''
           type: string
         Status:
-          description: ""
+          description: ''
           type: string
         FieldGroup:
-          description: ""
+          description: ''
           type: string
     AppendedField:
       description: "<p>Types of fields you will see here include</p>\r\n<table class=\"help-page-table\">\r\n  <thead>\r\n    <tr>\r\n      <td>\r\n        <b>FieldName</b>\r\n      </td>\r\n      <td>\r\n        <b>Data</b>\r\n      </td>\r\n      <td>\r\n        <b>Comments</b>\r\n      </td>\r\n    </tr>\r\n  </thead>\r\n  <tbody>\r\n    <tr>\r\n      <td>WatchlistState</td>\r\n      <td>Clear</td>\r\n      <td>If the submitted individual did not match any watchlist checks, the appended field data will appear as clear</td>\r\n    </tr>\r\n    <tr>\r\n      <td>WatchlistState</td>\r\n      <td>Hit</td>\r\n      <td>If the submitted individual triggered a watchlist hit, the watchlistdata field also be included as below:</td>\r\n    </tr>\r\n    <tr>\r\n      <td>WatchlistData</td>\r\n      <td>Name|URL\\tName2|URL</td>\r\n      <td> Name of the source a pipe (|) the url of the source each source is separated with a tab (\\t )</td>\r\n    </tr>\r\n    <tr>\r\n      <td>CanadaSixMonthResidency</td>\r\n      <td>YES</td>\r\n      <td>The Canadian Credit Agency provides a flag to indicate that an individual has been at the specified\r\n            residence for at least six months.The canadasixmonthresidency field is returned with a value of either YES or NO.</td>\r\n    </tr>\r\n    <tr>\r\n      <td>IsDeceased</td>\r\n      <td>False</td>\r\n      <td>The IsDeceased field is returned by various datasources to indicate whether the input information was screened against an available death file.\r\n            Check with your Trulioo Technical Account Manager to see which datasources support this option.</td>\r\n    </tr>\r\n    <tr>\r\n      <td>IsDeceased</td>\r\n      <td>True</td>\r\n      <td></td>\r\n    </tr>\r\n    <tr>\r\n      <td>FraudFlag</td>\r\n      <td>True</td>\r\n      <td></td>\r\n    </tr>\r\n    <tr>\r\n      <td>FraudFlag</td>\r\n      <td>False</td>\r\n      <td></td>\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n<p>If you are retrieving transaction with address corrected values you will also see address fields in appended data</p>"
       type: object
       properties:
         FieldName:
-          description: ""
+          description: ''
           type: string
         Data:
-          description: ""
-          type: string
+          description: ''
+          type: object
     TransactionRecordResult:
-      description: ""
+      description: ''
       type: object
       allOf:
-        - $ref: "#/components/schemas/VerifyResult"
+        - $ref: '#/components/schemas/VerifyResult'
         - type: object
           properties:
             InputFields:
-              description: ""
+              description: ''
               type: array
               items:
-                $ref: "#/components/schemas/DataField"
+                $ref: '#/components/schemas/DataField'
       properties: {}
     DataField:
-      description: ""
+      description: ''
       type: object
       properties:
         FieldName:
-          description: ""
+          description: ''
           type: string
         Value:
-          description: ""
+          description: ''
           type: string
         FieldGroup:
-          description: ""
+          description: ''
           type: string
+    BusinessSearchRequest_BusinessSearchModel:
+      description: Business Object
+      type: object
+      properties:
+        BusinessName:
+          description: Name of the business to be verified
+          maxLength: 250
+          minLength: 0
+          type: string
+        Website:
+          description: Website of the business
+          maxLength: 250
+          minLength: 0
+          type: string
+        JurisdictionOfIncorporation:
+          description: Jurisdiction Of Incorporation of the business to be verified
+          maxLength: 250
+          minLength: 0
+          type: string
+        DUNSNumber:
+          description: DUNS number of the business to be verified
+          maxLength: 250
+          minLength: 0
+          type: string
+        Location:
+          $ref: '#/components/schemas/Location'
+  parameters:
+    configurationName:
+      in: path
+      name: configurationName
+      description: >-
+        The product configuration. Currently "Identity Verification" for all
+        products.
+      schema:
+        type: string
+        default: Identity Verification
+      required: true
+    mode:
+      in: path
+      name: mode
+      description: trial or live
+      schema:
+        type: string
+        default: trial
+      required: true
